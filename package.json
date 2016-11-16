@@ -1,0 +1,18 @@
+{
+  "name": "aydaw",
+  "version": "1.0.0",
+  "description": "\"Are you doing any work?\" - A tool that tracks users' git contributions",
+  "main": "app.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.intuit.com/ltran6/aydaw.git"
+  },
+  "author": "Leland Tran",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.14.0"
+  }
+}
