@@ -1,12 +1,25 @@
 var express = require('express');
+var exphbs = require('express-handlebars');
 var app = express();
 
-app.use(express.static('public'));
 
+app.set('views', './assets/views');
+app.engine('handlebars', exphbs({defaultLayout: 'layout', layoutsDir:__dirname+'/assets/views/layouts'}));
+app.set('view engine', 'handlebars');
+
+app.use(express.static('public'));
+app.use(function(req,res,next){
+	console.log('Request URL:', req.originalUrl);
+	next();
+}, function (req, res, next) {
+	console.log('Request Type:', req.method);
+	next();
+});
 
 app.get('/', function(req, res) {
-   res.send('hello world');
+   res.render('index', {title: 'Indexxx'});
 });
+
 
 
 
