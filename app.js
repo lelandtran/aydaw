@@ -4,12 +4,13 @@ var session = require('express-session');
 var exphbs = require('express-handlebars');
 var bodyParser = require('body-parser');
 var request = require('request');
+var PropertiesReader = require('properties-reader');
 var app = express();
 var GitHubStrategy = require('passport-github2').Strategy;
+var properties = PropertiesReader('./secret.properties');
 
-var GITHUB_CLIENT_ID = "85cf4f7639313a6f10a4";
-var GITHUB_CLIENT_SECRET = "b62b4279e42e9cc2244808eccbe39cb080c56f34";
-
+var GITHUB_CLIENT_ID = properties.get('user.github.clientId');
+var GITHUB_CLIENT_SECRET = properties.get('user.github.clientSecret');
 
 // Passport session setup.
 //   To support persistent login sessions, Passport needs to be able to
@@ -45,7 +46,7 @@ passport.use(new GitHubStrategy({
   		return done(null, profile);
   	})
   }
-))
+));
 
 
 app.set('views', './assets/views');
@@ -71,13 +72,16 @@ app.get('/', function(req, res) {
 });
 
 app.get('/repo', ensureAuthenticated, function(req, res){
-	var sendReq = request('https://www.google.com', function (error, response, body){
+	var httpResponse = request('https://api.github.com', function (error, response, body){
 		if (!error && response.statusCode == 200){
-			console.log(body);
+			console.log("body: " + body);
+		}
+		else {
+			console.log("error: " + error);
+			console.log("statusCode: " + response.statusCode);
 		}
 	});
-	console.log(sendReq);
-	res.render('repo', { user : req.user });
+	res.render('repo', { resBody : httpResponse });
 });
 
 app.get('/login', function(req, res){
