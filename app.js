@@ -3,11 +3,12 @@ var passport = require('passport');
 var session = require('express-session');
 var exphbs = require('express-handlebars');
 var bodyParser = require('body-parser');
+var request = require('request');
 var app = express();
 var GitHubStrategy = require('passport-github2').Strategy;
 
-var GITHUB_CLIENT_ID = "--insert-github-client-id-here--";
-var GITHUB_CLIENT_SECRET = "--insert-github-client-secret-here--";
+var GITHUB_CLIENT_ID = "85cf4f7639313a6f10a4";
+var GITHUB_CLIENT_SECRET = "b62b4279e42e9cc2244808eccbe39cb080c56f34";
 
 
 // Passport session setup.
@@ -70,6 +71,12 @@ app.get('/', function(req, res) {
 });
 
 app.get('/repo', ensureAuthenticated, function(req, res){
+	var sendReq = request('https://www.google.com', function (error, response, body){
+		if (!error && response.statusCode == 200){
+			console.log(body);
+		}
+	});
+	console.log(sendReq);
 	res.render('repo', { user : req.user });
 });
 
@@ -78,21 +85,22 @@ app.get('/login', function(req, res){
 });
 
 app.get('/auth/github',
-	passport.authenticate('github', { scope: [ 'user:email' ] }),
+	passport.authenticate('github', { scope: [ 'user:email', 'repo:status' ] }),
 	function(req, res){
 		// The request will be redirected to GitHub for authentication, so this
     	// function will not be called.
 	});
 
-app.get('/auth/github/callback',
+app.get('/auth/github/callback', 
+	function(req, res, next){ console.log('auth callback'); next(); },
 	passport.authenticate('github', { failureRedirect: '/login' }),
 	function(req, res){
 		res.redirect('/');
-	});
+});
 
 app.get('/logout', function(req, res){
 	req.logout();
-	res.reidrect('/');
+	res.redirect('/');
 });
 
 
