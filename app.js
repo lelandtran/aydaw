@@ -6,7 +6,7 @@ var bodyParser = require('body-parser');
 var request = require('request');
 var PropertiesReader = require('properties-reader');
 var app = express();
-var GitHubStrategy = require('passport-github2').Strategy;
+var GitHubStrategy = require('passport-github').Strategy;
 var properties = PropertiesReader('./secret.properties');
 
 var GITHUB_CLIENT_ID = properties.get('user.github.clientId');
