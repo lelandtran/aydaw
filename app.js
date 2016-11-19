@@ -82,19 +82,17 @@ app.get('/repo', ensureAuthenticated, function(req, res){
 	request(requestOps, function (error, response, body){
 		if (!error && response.statusCode == 200){
 			console.log("body: " + body);
-			httpResponse = body;
-			console.log("set httpResponse to: " + httpResponse);
-			res.send(body);
+			httpResponse = JSON.parse(body);
+			console.log("set httpResponse to: " + JSON.stringify(httpResponse));
+			res.render('repo', { resBody : httpResponse});
 		}
 		else {
 			console.log("!error: " + !error);
 			console.log("body: " + body);
 			console.log("statusCode: " + response.statusCode);
-			res.json( {error: error});
+			// res.json( {error: error});
 		}
 	});
-	// console.log("once more: " + httpResponse);
-	// res.json(httpResponse);
 });
 
 app.get('/login', function(req, res){
