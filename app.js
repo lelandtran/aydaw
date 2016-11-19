@@ -72,16 +72,29 @@ app.get('/', function(req, res) {
 });
 
 app.get('/repo', ensureAuthenticated, function(req, res){
-	var httpResponse = request('https://api.github.com', function (error, response, body){
+	var requestOps = {
+		url: 'https://api.github.com',
+		headers: {
+			'User-Agent' : 'aydaw'
+		}
+	};
+	var httpResponse = null;
+	request(requestOps, function (error, response, body){
 		if (!error && response.statusCode == 200){
 			console.log("body: " + body);
+			httpResponse = body;
+			console.log("set httpResponse to: " + httpResponse);
+			res.send(body);
 		}
 		else {
-			console.log("error: " + error);
+			console.log("!error: " + !error);
+			console.log("body: " + body);
 			console.log("statusCode: " + response.statusCode);
+			res.json( {error: error});
 		}
 	});
-	res.render('repo', { resBody : httpResponse });
+	// console.log("once more: " + httpResponse);
+	// res.json(httpResponse);
 });
 
 app.get('/login', function(req, res){
