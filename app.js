@@ -11,6 +11,7 @@ var properties = PropertiesReader('./secret.properties');
 
 var GITHUB_CLIENT_ID = properties.get('user.github.clientId');
 var GITHUB_CLIENT_SECRET = properties.get('user.github.clientSecret');
+var oAuthToken = null;
 
 // Passport session setup.
 //   To support persistent login sessions, Passport needs to be able to
@@ -43,7 +44,9 @@ passport.use(new GitHubStrategy({
       // represent the logged-in user.  In a typical application, you would want
       // to associate the GitHub account with a user record in your database,
       // and return that user instead.
-  		return done(null, profile);
+      oAuthToken = accessToken;
+      console.log("accessToken: " + accessToken);
+      return done(null, profile);
   	})
   }
 ));
@@ -72,8 +75,17 @@ app.get('/', function(req, res) {
 });
 
 app.get('/repo', ensureAuthenticated, function(req, res){
+	var owner = req.query.owner;
+	var repo = req.query.repo;
+	var since = req.query.since;
+
+	owner = owner != null ? owner : 'lelandtran';
+	var reqUrl = repo == null ? 'https://api.github.com' : 'https://api.github.com/repos/'+owner+'/'+repo+'/commits';
+
+	console.log('owner: ' + owner + ', repo: ' + repo + ', since: ' + since);
+	console.log('reqUrl: ' + reqUrl);
 	var requestOps = {
-		url: 'https://api.github.com',
+		url: reqUrl,
 		headers: {
 			'User-Agent' : 'aydaw'
 		}
@@ -84,13 +96,14 @@ app.get('/repo', ensureAuthenticated, function(req, res){
 			console.log("body: " + body);
 			httpResponse = JSON.parse(body);
 			console.log("set httpResponse to: " + JSON.stringify(httpResponse));
-			res.render('repo', { resBody : httpResponse});
+			res.render('repo', { url: reqUrl, resBody : httpResponse});
 		}
 		else {
+			console.log("OAUTH-TOKEN: " + JSON.stringify(requestOps.headers));
 			console.log("!error: " + !error);
 			console.log("body: " + body);
 			console.log("statusCode: " + response.statusCode);
-			// res.json( {error: error});
+			res.json( {error: body});
 		}
 	});
 });

@@ -1,2 +1,14 @@
 <!DOCTYPE html>
 <h1>Example App: {{title}}</h1>
+<a href="/login">Log In</a>
+<a href="/repo">Repo</a>
+
+<form action='/repo'>
+	Enter an owner name:<input type='textbox' name='owner'/>
+	<br/>
+	Enter a repo name:<input type='textbox' name='repo'/>
+	<br/>
+	Enter a starting date:<input type='textbox' name='since'/>
+	<br/>
+	<button type='submit'>Send</button>
+</form>
