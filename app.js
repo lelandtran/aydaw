@@ -13,6 +13,15 @@ var GITHUB_CLIENT_ID = properties.get('user.github.clientId');
 var GITHUB_CLIENT_SECRET = properties.get('user.github.clientSecret');
 var oAuthToken = null;
 
+var hbs = exphbs.create({
+	extname : '.hbs',
+	defaultLayout: 'layout', 
+	layoutsDir:__dirname+'/assets/views/layouts',
+	helpers: {
+		counter : function(index) {return index+1;}
+	}
+})
+
 // Passport session setup.
 //   To support persistent login sessions, Passport needs to be able to
 //   serialize users into and deserialize users out of the session.  Typically,
@@ -53,8 +62,8 @@ passport.use(new GitHubStrategy({
 
 
 app.set('views', './assets/views');
-app.engine('handlebars', exphbs({defaultLayout: 'layout', layoutsDir:__dirname+'/assets/views/layouts'}));
-app.set('view engine', 'handlebars');
+app.engine('hbs', hbs.engine);
+app.set('view engine', 'hbs');
 
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended : true }));
@@ -79,7 +88,7 @@ app.get('/repo', ensureAuthenticated, function(req, res){
 	var repo = req.query.repo;
 	var since = req.query.since;
 
-	owner = owner != null ? owner : 'lelandtran';
+	owner = owner != "" ? owner : 'lelandtran';
 	var reqUrl = repo == null ? 'https://api.github.com' : 'https://api.github.com/repos/'+owner+'/'+repo+'/commits';
 
 	console.log('owner: ' + owner + ', repo: ' + repo + ', since: ' + since);
@@ -96,7 +105,7 @@ app.get('/repo', ensureAuthenticated, function(req, res){
 			console.log("body: " + body);
 			httpResponse = JSON.parse(body);
 			console.log("set httpResponse to: " + JSON.stringify(httpResponse));
-			res.render('repo', { url: reqUrl, resBody : httpResponse});
+			res.render('repo', { reqUrl: reqUrl, resBody : body, commits : httpResponse });
 		}
 		else {
 			console.log("OAUTH-TOKEN: " + JSON.stringify(requestOps.headers));
