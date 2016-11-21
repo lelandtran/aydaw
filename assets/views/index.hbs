@@ -4,7 +4,7 @@
 {{> repo-form }}
 <p>URL: {{ reqUrl }}</p>
 <div id='commits' style='margin: 0 auto'>
-	<p>COMMITS: </p>
+	<p>COMMITS: {{ numCommits }}</p>
 	{{#each commits}}
 		<div style='margin-left: 50px'
 			<p>COMMIT {{ counter @index }}</p>

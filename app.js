@@ -115,7 +115,8 @@ app.get('/repo', ensureAuthenticated, function(req, res){
 				title: 'Repo', 
 				reqUrl: reqUrl, 
 				resBody : body, 
-				commits : httpResponse, 
+				commits : httpResponse,
+				numCommits : httpResponse.length, 
 				username : username 
 			});
 		}
@@ -151,8 +152,6 @@ app.get('/logout', function(req, res){
 	req.logout();
 	res.redirect('/');
 });
-
-
 
 app.use(function (req, res, next) {
   res.status(404).send('Sorry cant find that!')
