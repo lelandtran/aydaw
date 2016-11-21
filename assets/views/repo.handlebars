@@ -1,7 +1,18 @@
 <!DOCTYPE html>
 <h1>Example App: Repo</h1>
 
-{{> repo-form }}
+<form action='/repo'>
+	Enter an owner name:<input type='textbox' name='owner'/>
+	<br>
+	Enter a repo name:<input type='textbox' name='repo'/>
+	<br>
+	Date Range (YYYY-MM-DD):
+	<br>
+	<input type='textbox' name='since' placeholder='Starting date'/>
+	<input type='textbox' name='until' placeholder='Ending date'/>
+	<br>
+	<button type='submit'>Send</button>
+</form>
 <p>URL: {{ reqUrl }}</p>
 <div id='commits' style='margin: 0 auto'>
 	<p>COMMITS: </p>

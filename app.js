@@ -17,10 +17,11 @@ var hbs = exphbs.create({
 	extname : '.hbs',
 	defaultLayout: 'layout', 
 	layoutsDir:__dirname+'/assets/views/layouts',
+	partialsDir:__dirname+'/assets/views/partials/',
 	helpers: {
 		counter : function(index) {return index+1;}
 	}
-})
+});
 
 // Passport session setup.
 //   To support persistent login sessions, Passport needs to be able to
@@ -87,11 +88,14 @@ app.get('/repo', ensureAuthenticated, function(req, res){
 	var owner = req.query.owner;
 	var repo = req.query.repo;
 	var since = req.query.since;
+	var until = req.query.until;
 
 	owner = owner != "" ? owner : 'lelandtran';
-	var reqUrl = repo == null ? 'https://api.github.com' : 'https://api.github.com/repos/'+owner+'/'+repo+'/commits';
+	var reqUrl = repo == "" ? 'https://api.github.com' : 'https://api.github.com/repos/'+owner+'/'+repo+'/commits?';
+	reqUrl = since == "" ? reqUrl : reqUrl + 'since='+since;
+	reqUrl = until == "" ? reqUrl : reqUrl + 'until='+until;
 
-	console.log('owner: ' + owner + ', repo: ' + repo + ', since: ' + since);
+	console.log('owner: ' + owner + ', repo: ' + repo + ', since: ' + since, 'until: ' + until);
 	console.log('reqUrl: ' + reqUrl);
 	var requestOps = {
 		url: reqUrl,
