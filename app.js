@@ -12,6 +12,7 @@ var properties = PropertiesReader('./secret.properties');
 var GITHUB_CLIENT_ID = properties.get('user.github.clientId');
 var GITHUB_CLIENT_SECRET = properties.get('user.github.clientSecret');
 var oAuthToken = null;
+var username = null;
 
 var hbs = exphbs.create({
 	extname : '.hbs',
@@ -55,6 +56,7 @@ passport.use(new GitHubStrategy({
       // to associate the GitHub account with a user record in your database,
       // and return that user instead.
       oAuthToken = accessToken;
+      username = profile.username;
       console.log("accessToken: " + accessToken);
       return done(null, profile);
   	})
@@ -81,7 +83,7 @@ app.use(function(req,res,next){
 });
 
 app.get('/', function(req, res) {
-   res.render('index', {title: 'Indexxx'});
+   res.render('index', {title: 'Home', username : username });
 });
 
 app.get('/repo', ensureAuthenticated, function(req, res){
@@ -109,7 +111,13 @@ app.get('/repo', ensureAuthenticated, function(req, res){
 			console.log("body: " + body);
 			httpResponse = JSON.parse(body);
 			console.log("set httpResponse to: " + JSON.stringify(httpResponse));
-			res.render('repo', { reqUrl: reqUrl, resBody : body, commits : httpResponse });
+			res.render('index', { 
+				title: 'Repo', 
+				reqUrl: reqUrl, 
+				resBody : body, 
+				commits : httpResponse, 
+				username : username 
+			});
 		}
 		else {
 			console.log("OAUTH-TOKEN: " + JSON.stringify(requestOps.headers));
@@ -122,7 +130,7 @@ app.get('/repo', ensureAuthenticated, function(req, res){
 });
 
 app.get('/login', function(req, res){
-	res.render('login', { user : req.user });
+	res.render('login');
 });
 
 app.get('/auth/github',

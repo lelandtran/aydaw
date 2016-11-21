@@ -1,17 +1,19 @@
 <!DOCTYPE html>
-<h1>Example App: {{title}}</h1>
-<a href="/login">Log In</a>
-<a href="/repo">Repo</a>
 
+{{> nav }}
 {{> repo-form }}
-<!--
-<form action='/repo'>
-	Enter an owner name:<input type='textbox' name='owner'/>
-	<br/>
-	Enter a repo name:<input type='textbox' name='repo'/>
-	<br/>
-	Enter a starting date:<input type='textbox' name='since'/>
-	<br/>
-	<button type='submit'>Send</button>
-</form>
--->
+<p>URL: {{ reqUrl }}</p>
+<div id='commits' style='margin: 0 auto'>
+	<p>COMMITS: </p>
+	{{#each commits}}
+		<div style='margin-left: 50px'
+			<p>COMMIT {{ counter @index }}</p>
+			<p>SHA: {{ sha }}</p>
+			<p>AUTHOR: {{ commit.author.email }}</p>
+			<p>DATE: {{ commit.author.date }}</p>
+			<p>MESSAGE: {{ commit.message }}</p>
+			<hr>
+		</div>
+	{{/each}}
+</div>
+<p>RESPONSE: {{ resBody }}</p>
